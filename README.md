@@ -25,6 +25,7 @@ A aplicação tem como finalidade:
 ## Tecnologias Utilizadas
 - **Frontend:** HTML, CSS, JavaScript.
 - **Backend:** Node.js, Express.
+- **Testes:** Mocha, Chai, Postman.
 - **Banco de Dados:** MySQL Workbench.
 
 ## Licença
