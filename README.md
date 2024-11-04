@@ -25,7 +25,7 @@ A aplicação tem como finalidade:
 - **Frontend:** HTML, CSS, JavaScript.
 - **Backend:** Node.js, Express.
 - **Testes:** Mocha, Chai.
-- **Banco de Dados:** SQL.
+- **Banco de Dados:** MySQL.
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](https://github.com/Lucas-Munhoz/PresenceList/blob/main/LICENSE). 
