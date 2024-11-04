@@ -13,9 +13,8 @@ O **PresenceList** é uma aplicação web desenvolvida como parte do projeto de 
 
 ## Objetivos do Projeto
 A aplicação tem como finalidade:
-- Proporcionar um sistema simples e eficaz para o registro de presença.
-- Aumentar a organização e a eficiência no controle de frequência dos alunos.
-- Facilitar o acesso a informações sobre a presença dos alunos.
+- Proporcionar um sistema simples e eficaz para o registro de presença e geração de certificados.
+- Facilitar o acesso a informações sobre a participação dos alunos no workshops.
 
 ## Funcionalidades
 - Registro de presença.
@@ -25,8 +24,8 @@ A aplicação tem como finalidade:
 ## Tecnologias Utilizadas
 - **Frontend:** HTML, CSS, JavaScript.
 - **Backend:** Node.js, Express.
-- **Testes:** Mocha, Chai, Postman.
-- **Banco de Dados:** MySQL Workbench.
+- **Testes:** Mocha, Chai.
+- **Banco de Dados:** SQL.
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](https://github.com/Lucas-Munhoz/PresenceList/blob/main/LICENSE). 
