@@ -17,14 +17,15 @@ A aplicação tem como finalidade:
 - Facilitar o acesso a informações sobre a participação dos alunos no workshops.
 
 ## Funcionalidades
-- Registro de presença.
-- Visualização do histórico de listas de presença.
+- Cadastro e login de professores.
+- Cadastro de workshop.
+- Visualização e registro do histórico de listas de presença.
 - Interface simples e amigável.
 
 ## Tecnologias Utilizadas
 - **Frontend:** HTML, CSS, JavaScript.
 - **Backend:** Node.js, Express.
-- **Testes:** Mocha, Chai.
+- **Testes:** Playwright.
 - **Banco de Dados:** MySQL.
 
 ## Licença
