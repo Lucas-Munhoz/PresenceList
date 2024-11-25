@@ -25,7 +25,7 @@ A aplicação tem como finalidade:
 ## Tecnologias Utilizadas
 - **Frontend:** HTML, CSS, JavaScript.
 - **Backend:** Node.js, Express.
-- **Testes:** Playwright.
+- **Testes:** Jest, Supertest.
 - **Banco de Dados:** MySQL.
 
 ## Licença
