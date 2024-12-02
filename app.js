@@ -5,6 +5,7 @@ const sequelize = require('./src/db/connection');
 
 const loginController = require('./src/controllers/loginController');
 const redefinirSenhaController = require('./src/controllers/redefinirSenhaController');
+const professorController = require('./src/controllers/professorController');
 
 const app = express();
 
@@ -31,6 +32,13 @@ app.post('/redefinir-senha', redefinirSenhaController.redefinirSenha);
 app.get('/workshop', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'public', 'views', 'telaWorkshop.html'));
 });
+
+// Rotas de cadastro de professores
+app.get('/cadastro-professor', professorController.exibirTelaCadastroProfessor);
+app.post('/cadastro-professor', professorController.inserirProfessor);
+app.get('/listar-professores', professorController.listarProfessores)
+app.delete('/deletar-professor', professorController.deletarProfessor);
+
 
 // Conectar ao banco de dados e iniciar o servidor
 sequelize.sync().then(() => {
