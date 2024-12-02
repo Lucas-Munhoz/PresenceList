@@ -45,6 +45,7 @@ Abra o terminal na raiz do projeto e execute o seguinte código node para instal
 ```bash
   npm install
 ```
+
 ### Configuração do Banco de Dados
 Utilize os arquivos SQL disponibilizados em `/src/db` para criar tanto o banco de dados quanto valores para testes.  
 
@@ -63,6 +64,7 @@ Além disso, será necessário alterar o arquivo `connection.js` que também est
 
   module.exports = sequelize;
 ```
+
 ### Iniciar o Servidor
 Com tudo pronto e localizado na pasta raiz do projeto, basta rodar o seguinte comando node em seu terminal:
 ```bash
