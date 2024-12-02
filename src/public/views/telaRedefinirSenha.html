@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha</title>
+    <link rel="stylesheet" href="/css/styleRedefinirSenha.css">
+</head>
+<body>
+    <div class="recover-container">
+        <h2>Recuperar Senha</h2>
+
+        <!-- Parte 1: Enviar Código -->
+        <section class="email-section" id="email-section">
+            <p>Digite seu e-mail cadastrado para receber um código de redefinição de senha.</p>
+            <form id="email-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                </div>
+                <button type="button" class="btn" id="send-code-btn">Enviar Código</button>
+            </form>
+        </section>
+
+        <!-- Parte 2: Redefinir Senha -->
+        <section class="reset-section" id="reset-section" style="display: none;">
+            <p>Digite o código enviado para seu e-mail e a nova senha para redefinir.</p>
+            <form id="reset-form">
+                <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input type="text" id="codigo" name="codigo" placeholder="Digite o código" required>
+
+                    <label for="nova-senha">Nova Senha</label>
+                    <input type="password" id="nova-senha" name="nova-senha" placeholder="Digite a nova senha" required>
+                </div>
+                <button type="button" class="btn" id="reset-password-btn">Redefinir Senha</button>
+            </form>
+        </section>
+
+        <a href="/login" class="btn-link">Voltar para o login</a>
+    </div>
+
+    <script>
+        document.getElementById('send-code-btn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+
+            if(email) {
+                fetch('/enviar-codigo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emailProf: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Código de recuperação enviado para o e-mail.");
+                        document.getElementById('email-section').style.display = 'none';
+                        document.getElementById('reset-section').style.display = 'block';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Erro ao enviar o código.");
+                });
+            }
+            else {
+                alert("Por favor, insira um e-mail válido.");
+            }
+        });
+
+        document.getElementById('reset-password-btn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const codigo = document.getElementById('codigo').value;
+            const novaSenha = document.getElementById('nova-senha').value;
+
+            if(codigo && novaSenha) {
+                fetch('/redefinir-senha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emailProf: email, recoveryCode: codigo, novaSenha: novaSenha })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Senha redefinida com sucesso!");
+                        window.location.href = '/login';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Erro ao redefinir a senha.");
+                });
+            }
+            else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        });
+    </script>
+</body>
+</html>
