@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login do Professor</title>
+    <link rel="stylesheet" href="/css/styleLoginProfessor.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login do Professor</h2>
+        <form id="formLogin">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="emailProf" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="senhaProf" placeholder="Digite sua senha" required>
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+        <a href="/redefinir-senha" class="btn-link">Esqueceu a senha?</a>
+        <a href="/cadastro-professor" class="btn-link">Não tem conta? Cadastre-se</a>
+    </div>
+
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const emailProf = document.getElementById('email').value;
+            const senhaProf = document.getElementById('password').value;
+
+            if(!emailProf || !senhaProf) {
+                alert('E-mail e senha são obrigatórios.');
+                return;
+            }
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailProf, senhaProf })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.href = data.redirectTo;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao fazer a requisição.');
+            });
+        });
+    </script>
+</body>
+</html>
