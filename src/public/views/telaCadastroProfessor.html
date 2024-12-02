@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Professor</title>
+    <link rel="stylesheet" href="/css/styleCadastroProfessor.css">
+</head>
+<body>
+    <div class="register-container">
+        <h2>Cadastro de Professor</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nomeProf" placeholder="Digite seu nome" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="emailProf" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senhaProf" placeholder="Digite sua senha" required>
+            </div>
+            <button type="submit" class="btn">Cadastrar</button>
+            <a href="/login" class="btn-link">Já tem conta? Faça login</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const nomeProf = document.getElementById('nome').value;
+            const emailProf = document.getElementById('email').value;
+            const senhaProf = document.getElementById('senha').value;
+
+            if(!nomeProf || !emailProf || !senhaProf) {
+                alert('Todos os campos são obrigatórios.');
+                return;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if(!emailRegex.test(emailProf)) {
+                alert('E-mail inválido. Por favor, insira um e-mail válido.');
+                return;
+            }
+
+            if(senhaProf.length < 8 || senhaProf.length > 16) {
+                alert('A senha deve ter entre 8 e 16 caracteres.');
+                return;
+            }
+
+            fetch('/cadastro-professor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nomeProf, emailProf, senhaProf })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert(data.message);
+                    window.location.href = '/login';
+                }
+                else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao fazer a requisição.');
+            });
+        });
+    </script>
+</body>
+</html>
