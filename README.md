@@ -36,45 +36,48 @@ A aplicação tem como finalidade:
 
 ### Clonando o Repositório
 Com o GIT instalado em sua máquina, rode o seguinte código para clonar o repositório:  
-```bash 
+```git 
   git clone https://github.com/Lucas-Munhoz/PresenceList.git
 ```
 
 ### Instalando as Dependências
 Abra o terminal na raiz do projeto e execute o seguinte código node para instalar as dependências:
-```bash
+```node
   npm install
 ```
 
 ### Configuração do Banco de Dados
-Utilize os arquivos SQL disponibilizados em `/src/db` para criar tanto o banco de dados quanto valores para testes.  
+Utilize os arquivos SQL disponibilizados em `/src/db` para criar o banco de dados padrão e o banco de dados de testes.  
 
-Além disso, será necessário alterar o arquivo `connection.js` que também está localizado em `/src/db`, para tal, siga o exemplo:
+Além disso, será necessário criar o arquivo `.env` que deve estar localizado na pasta raíz do projeto, e adicionar o seguinte conteúdo ao mesmo:
 
-```javascript
-  const { Sequelize } = require('sequelize');
-
-  const sequelize = new Sequelize('NOME-DO-BD', 'USUARIO-DO-BD', 'SENHA-DO-USUARIO', {
-      host: 'localhost',
-      dialect: 'mysql',
-      dialectOptions: {
-          charset: 'utf8mb4',
-      }
-  });
-
-  module.exports = sequelize;
+```bash
+    # Banco de padrão
+    DB_NAME=presencelistdb
+    DB_USER=USUARIO_DO_BANCO
+    DB_PASSWORD=SENHA_DO_USUARIO
+    
+    # Banco de testes
+    TEST_DB_NAME=presencelistdb_test
+    DB_USER=USUARIO_DO_BANCO
+    DB_PASSWORD=SENHA_DO_USUARIO
 ```
 
 ### Iniciar o Servidor
-Com tudo pronto e localizado na pasta raiz do projeto, basta rodar o seguinte comando node em seu terminal:
-```bash
-  npm start run
+Com as dependencias instaladas, `.env` configurado, bancos de dados criados, basta localizar-se na pasta raiz do projeto e rodar o seguinte comando node em seu terminal:
+```node
+  npm start
 ```
 
 ### Rodando os Testes
 Para executar os testes, primeiro deve possuir as dependências citadas anteriormente instaladas, após isso, basta estar localizado na pasta raíz do projeto e executar o seguinte comando node:
-```bash
-  npx jest tests
+```node
+  npm test
+```
+
+Para executar os testes de maneira individual, é necessário referenciar corretamente o arquivo que deseja executar o teste, portanto, insira em seu terminal `npx jest CAMINHO_DO_ARQUIVO/NOME_DO_ARQUIVO.js`, segue um exemplo para a tela de cadastro de professores:
+```node
+  npx jest tests/backend/telaCadProf.spec.js
 ```
 
 ## Licença
