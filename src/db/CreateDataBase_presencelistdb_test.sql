@@ -5,22 +5,22 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema PresenceListDB
+-- Schema presencelistdb_test
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `PresenceListDB` ;
+DROP SCHEMA IF EXISTS `presencelistdb_test` ;
 
 -- -----------------------------------------------------
--- Schema PresenceListDB
+-- Schema presencelistdb_test
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `PresenceListDB` DEFAULT CHARACTER SET utf8 ;
-USE `PresenceListDB` ;
+CREATE SCHEMA IF NOT EXISTS `presencelistdb_test` DEFAULT CHARACTER SET utf8 ;
+USE `presencelistdb_test` ;
 
 -- -----------------------------------------------------
--- Table `PresenceListDB`.`PROFESSOR`
+-- Table `presencelistdb_test`.`PROFESSOR`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PresenceListDB`.`PROFESSOR` ;
+DROP TABLE IF EXISTS `presencelistdb_test`.`PROFESSOR` ;
 
-CREATE TABLE IF NOT EXISTS `PresenceListDB`.`PROFESSOR` (
+CREATE TABLE IF NOT EXISTS `presencelistdb_test`.`PROFESSOR` (
   `idProf` INT NOT NULL AUTO_INCREMENT,
   `nomeProf` VARCHAR(80) NOT NULL,
   `emailProf` VARCHAR(80) NOT NULL,
@@ -32,11 +32,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PresenceListDB`.`WORKSHOP`
+-- Table `presencelistdb_test`.`WORKSHOP`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PresenceListDB`.`WORKSHOP` ;
+DROP TABLE IF EXISTS `presencelistdb_test`.`WORKSHOP` ;
 
-CREATE TABLE IF NOT EXISTS `PresenceListDB`.`WORKSHOP` (
+CREATE TABLE IF NOT EXISTS `presencelistdb_test`.`WORKSHOP` (
   `idWork` INT NOT NULL AUTO_INCREMENT,
   `nomeWork` VARCHAR(20) NOT NULL,
   `dataWork` DATE NOT NULL,
@@ -47,18 +47,18 @@ CREATE TABLE IF NOT EXISTS `PresenceListDB`.`WORKSHOP` (
   INDEX `fk_WORKSHOP_PROFESSOR1_idx` (`PROFESSOR_idProf` ASC) VISIBLE,
   CONSTRAINT `fk_WORKSHOP_PROFESSOR1`
     FOREIGN KEY (`PROFESSOR_idProf`)
-    REFERENCES `PresenceListDB`.`PROFESSOR` (`idProf`)
+    REFERENCES `presencelistdb_test`.`PROFESSOR` (`idProf`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PresenceListDB`.`ALUNOS`
+-- Table `presencelistdb_test`.`ALUNOS`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PresenceListDB`.`ALUNOS` ;
+DROP TABLE IF EXISTS `presencelistdb_test`.`ALUNOS` ;
 
-CREATE TABLE IF NOT EXISTS `PresenceListDB`.`ALUNOS` (
+CREATE TABLE IF NOT EXISTS `presencelistdb_test`.`ALUNOS` (
   `raAlun` INT NOT NULL,
   `nomeAlun` VARCHAR(80) NOT NULL,
   PRIMARY KEY (`raAlun`),
@@ -67,11 +67,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PresenceListDB`.`LISTA_PRESENCA`
+-- Table `presencelistdb_test`.`LISTA_PRESENCA`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PresenceListDB`.`LISTA_PRESENCA` ;
+DROP TABLE IF EXISTS `presencelistdb_test`.`LISTA_PRESENCA` ;
 
-CREATE TABLE IF NOT EXISTS `PresenceListDB`.`LISTA_PRESENCA` (
+CREATE TABLE IF NOT EXISTS `presencelistdb_test`.`LISTA_PRESENCA` (
   `ALUNOS_raAlun` INT NOT NULL,
   `WORKSHOP_idWork` INT NOT NULL,
   `WORKSHOP_PROFESSOR_idProf` INT NOT NULL,
@@ -80,12 +80,12 @@ CREATE TABLE IF NOT EXISTS `PresenceListDB`.`LISTA_PRESENCA` (
   INDEX `fk_LISTA_PRESENCA_WORKSHOP1_idx` (`WORKSHOP_idWork` ASC, `WORKSHOP_PROFESSOR_idProf` ASC) VISIBLE,
   CONSTRAINT `fk_WORKSHOP_has_ALUNOS_ALUNOS1`
     FOREIGN KEY (`ALUNOS_raAlun`)
-    REFERENCES `PresenceListDB`.`ALUNOS` (`raAlun`)
+    REFERENCES `presencelistdb_test`.`ALUNOS` (`raAlun`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_LISTA_PRESENCA_WORKSHOP1`
     FOREIGN KEY (`WORKSHOP_idWork` , `WORKSHOP_PROFESSOR_idProf`)
-    REFERENCES `PresenceListDB`.`WORKSHOP` (`idWork` , `PROFESSOR_idProf`)
+    REFERENCES `presencelistdb_test`.`WORKSHOP` (`idWork` , `PROFESSOR_idProf`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
