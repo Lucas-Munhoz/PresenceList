@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "jest"
+    "test": "set NODE_ENV=test&& jest"
   },
   "repository": {
     "type": "git",
@@ -22,10 +22,13 @@
     "supertest": "^7.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
+    "jsdom": "^25.0.1",
     "mysql2": "^3.11.5",
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "whatwg-fetch": "^3.6.20"
   }
 }
