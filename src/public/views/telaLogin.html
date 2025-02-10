@@ -45,10 +45,11 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    window.location.href = data.redirectTo;
-                } else {
+                if(data.success) {
+                    localStorage.setItem('idProf', data.idProf);
+                    window.location.href = '/workshop'
+                }
+                else {
                     alert(data.message);
                 }
             })

@@ -1,0 +1,157 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+/* Container principal */
+.container {
+    width: 100%;
+    max-width: 960px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Cabeçalho */
+header h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Seção de formulário */
+.form-section {
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+/* Botão de cadastro */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Seção de alunos cadastrados */
+.alunos-section {
+    margin-top: 30px;
+}
+
+.alunos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.alunos-table th, .alunos-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.alunos-table th {
+    background-color: #f8f8f8;
+    color: #555;
+}
+
+.alunos-table td {
+    background-color: #fafafa;
+}
+
+/* Botões de ação */
+.btn-edit, .btn-delete, .btn-certificado {
+    padding: 5px 10px;
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+}
+
+.btn-edit {
+    background-color: #28a745;
+}
+
+.btn-edit:hover {
+    background-color: #218838;
+}
+
+.btn-delete {
+    background-color: #a72828;
+}
+
+.btn-delete:hover {
+    background-color: #882121;
+}
+
+.btn-certificado {
+    background-color: #17a2b8;
+}
+
+.btn-certificado:hover {
+    background-color: #138496;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    .alunos-table {
+        font-size: 12px;
+    }
+
+    .input-group input {
+        font-size: 13px;
+    }
+
+    .btn-submit {
+        font-size: 14px;
+    }
+}

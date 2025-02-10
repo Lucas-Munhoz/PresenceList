@@ -13,7 +13,7 @@
         </header>
         <main>
             <section class="form-section">
-                <form action="#" method="post">
+                <form id="formWorkshop">
                     <div class="input-group">
                         <label for="nome">Nome do Workshop:</label>
                         <input type="text" id="nome" name="nome" required>
@@ -22,7 +22,7 @@
                         <label for="data">Data:</label>
                         <input type="date" id="data" name="data" required>
                     </div>
-                    <button type="submit" class="btn-submit">Cadastrar</button>
+                    <button type="submit" id="btn-submit" class="btn-submit">Cadastrar</button>
                 </form>
             </section>
             <section class="workshops-section">
@@ -37,12 +37,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Exemplo de Workshop</td>
-                            <td>2024-12-15</td>
+                            <td contenteditable="false" >Exemplo de Workshop</td>
+                            <td contenteditable="false" >2024-12-15</td>
                             <td>
                                 <button class="btn-edit">Editar</button>
                                 <button class="btn-delete">Excluir</button>
-                                <button class="btn-info">Informações</button>
+                                <button class="btn-info">Lista de Presença</button>
                             </td>
                         </tr>
                     </tbody>
@@ -50,5 +50,170 @@
             </section>
         </main>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            carregarWorkshops();
+        });
+
+        function carregarWorkshops() {
+            const idProf = localStorage.getItem('idProf');
+
+            if(!idProf) {
+                alert('Erro ao obter informações do professor.');
+                return;
+            }
+
+            fetch(`/listar-workshops/${idProf}`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        const tbody = document.querySelector('.workshops-table tbody');
+                        tbody.innerHTML = '';
+
+                        data.workshops.forEach(workshop => {
+                            const tr = document.createElement('tr');
+                            tr.setAttribute('id', `workshop-${workshop.idWork}`);
+
+                            tr.innerHTML = `
+                                <td class="workshop-name" contenteditable="false" >${workshop.nomeWork}</td>
+                                <td class="workshop-date" contenteditable="false" >${new Date(workshop.dataWork).toLocaleDateString('pt-BR')}</td>
+                                <td>
+                                    <button class="btn-edit" onclick="editarWorkshop(${workshop.idWork})">Editar</button>
+                                    <button class="btn-delete" onclick="deletarWorkshop(${workshop.idWork})">Excluir</button>
+                                    <button class="btn-info" onclick="entrarListaPresenca(${workshop.idWork})">Lista de Presença</button>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Erro ao carregar workshops.');
+                });
+        }
+
+        function entrarListaPresenca(idWork) {
+            window.location.href = `/lista-presenca/${idWork}`
+        }
+
+        function deletarWorkshop(idWork) {
+            if(!confirm("Tem certeza que deseja excluir este workshop?")) {
+                return;
+            }
+
+            fetch(`/excluir-workshop/${idWork}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    console.log('Workshop ID: ' + idWork + ' excluído com sucesso!');
+                    alert(data.message);
+                    carregarWorkshops();
+                }
+                else {
+                    console.log('Exclusão do workshop ID: ' + idWork + ' falhou!');
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Erro ao excluir workshop.");
+            });
+        }
+
+        function editarWorkshop(idWork) {
+            const tr = document.getElementById(`workshop-${idWork}`);
+            const nomeCell = tr.querySelector('.workshop-name');
+            const dataCell = tr.querySelector('.workshop-date');
+
+            nomeCell.contentEditable = true;
+            dataCell.contentEditable = true;
+            tr.style.border = '2px solid black';
+            nomeCell.focus();
+
+            const btn = tr.querySelector('.btn-edit');
+            btn.textContent = 'Salvar';
+            btn.setAttribute('onclick', `salvarEdicao(${idWork})`);
+        }
+
+        function salvarEdicao(idWork) {
+            const tr = document.getElementById(`workshop-${idWork}`);
+            const nomeCell = tr.querySelector('.workshop-name');
+            const dataCell = tr.querySelector('.workshop-date');
+
+            const nomeWork = nomeCell.textContent;
+            const dataWork = dataCell.textContent;
+
+            fetch(`/editar-workshop/${idWork}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nomeWork, dataWork })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    nomeCell.contentEditable = false;
+                    dataCell.contentEditable = false;
+                    tr.style.border = '1px solid #dddddd';
+
+                    const btn = tr.querySelector('.btn-edit');
+                    btn.textContent = 'Editar';
+                    btn.setAttribute('onclick', `editarWorkshop(${idWork})`);
+
+                    alert(data.message);
+                }
+                else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao salvar edição.');
+            });
+        }
+
+
+        document.getElementById('btn-submit').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const nomeWork = document.getElementById('nome').value;
+            const dataWork = document.getElementById('data').value;
+            const PROFESSOR_idProf = localStorage.getItem('idProf');
+
+            if(!nomeWork || !dataWork) {
+                alert('O nome e a data são obrigatórios!');
+                return;
+            }
+
+            fetch('/cadastro-workshop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nomeWork, dataWork, PROFESSOR_idProf })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    carregarWorkshops();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao fazer a requisição.');
+            });
+        });
+    </script>
 </body>
 </html>
