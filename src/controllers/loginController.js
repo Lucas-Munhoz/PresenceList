@@ -23,7 +23,7 @@ exports.loginProfessor = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Senha incorreta.' });
         }
 
-        res.status(200).json({ success: true, message: 'Login realizado com sucesso!', redirectTo: '/workshop' });
+        res.status(200).json({ success: true, message: 'Login realizado com sucesso!', idProf: professor.idProf });
     }
     catch (error) {
         console.error(error);
