@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Presença</title>
+    <link rel="stylesheet" href="/css/styleListaPresenca.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Registro de Presença</h2>
+        </header>
+        <main>
+            <section class="form-section">
+                <form action="#" method="post">
+                    <div class="input-group">
+                        <label for="nome">Nome do Aluno:</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="ra">RA:</label>
+                        <input type="text" id="ra" name="ra" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Cadastrar</button>
+                </form>
+            </section>
+            <section class="alunos-section">
+                <h3>Alunos Cadastrados</h3>
+                <table class="alunos-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>RA</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="aluno-nome" contenteditable="false" >Exemplo de Aluno</td>
+                            <td class="aluno-ra" contenteditable="false" >123456</td>
+                            <td>
+                                <button class="btn-edit">Editar</button>
+                                <button class="btn-delete">Excluir</button>
+                                <button class="btn-certificado">Gerar Certificado</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            carregarListaPresenca();
+        });
+    
+        function carregarListaPresenca() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idWork = window.location.pathname.split('/').pop();
+            const idProf = localStorage.getItem('idProf');
+    
+            if(!idProf) {
+                alert("Erro: ID do professor não encontrado!");
+                return;
+            }
+    
+            fetch(`/listar-alunos-presentes/${idWork}`, {
+                method: "GET",
+                headers: { "idProf": idProf }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    const tbody = document.querySelector(".alunos-table tbody");
+                    tbody.innerHTML = "";
+    
+                    if(data.alunos.length === 0) {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `<td colspan="3" style="text-align:center;">Nenhum aluno presente.</td>`;
+                        tbody.appendChild(tr);
+                    }
+                    else {
+                        data.alunos.forEach(aluno => {
+                            const tr = document.createElement("tr");
+                            tr.setAttribute('id', `aluno-${aluno.raAlun}`);
+    
+                            tr.innerHTML = `
+                                <td class="aluno-nome" contenteditable="false" >${aluno.nomeAlun}</td>
+                                <td class="aluno-ra" contenteditable="false" >${aluno.raAlun}</td>
+                                <td>
+                                    <button class="btn-edit" onclick="editarAluno(${aluno.raAlun})">Editar</button>
+                                    <button class="btn-delete" onclick="excluirAluno(${aluno.raAlun}, ${idWork})">Excluir</button>
+                                    <button class="btn-certificado" onclick="buscarInfoCertificado(${aluno.raAlun}, ${idWork})">Gerar Certificado</button>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                }
+                else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao carregar lista de presença: ", error);
+                alert("Erro ao carregar a lista de presença.");
+            });
+        }
+
+        document.querySelector('.btn-submit').addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const nomeAlun = document.getElementById('nome').value;
+            const raAlun = document.getElementById('ra').value;
+            const idWork = window.location.pathname.split('/').pop();
+            const idProf = localStorage.getItem('idProf');
+
+            if(!nomeAlun || !raAlun) {
+                alert('Nome e RA são obrigatórios!');
+                return;
+            }
+
+            fetch(`/adicionar-aluno-presenca/${idWork}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'idProf': idProf
+                },
+                body: JSON.stringify({ nomeAlun, raAlun })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert(data.message);
+                    carregarListaPresenca();
+                }
+                else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao adicionar aluno.');
+            });
+        });
+
+        function editarAluno(raAlun) {
+            const tr = document.getElementById(`aluno-${raAlun}`);
+            const nomeCell = tr.querySelector('.aluno-nome');
+
+            nomeCell.contentEditable = true;
+            tr.style.border = '2px solid black';
+            nomeCell.focus();
+
+            const btn = tr.querySelector('.btn-edit');
+            btn.textContent = 'Salvar';
+            btn.setAttribute('onclick', `salvarEdicao(${raAlun})`);
+        }
+
+        function salvarEdicao(raAlun) {
+            const tr = document.getElementById(`aluno-${raAlun}`);
+            const nomeCell = tr.querySelector('.aluno-nome');
+
+            const nomeAlun = nomeCell.textContent;
+
+            fetch(`/editar-aluno/${raAlun}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nomeAlun })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    nomeCell.contentEditable = false;
+                    tr.style.border = '1px solid #dddddd';
+
+                    const btn = tr.querySelector('.btn-edit');
+                    btn.textContent = 'Editar';
+                    btn.setAttribute('onclick', `editarAluno(${raAlun})`);
+
+                    alert(data.message);
+                }
+                else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao salvar edição.');
+            });
+        }
+    
+        function excluirAluno(raAlun, idWork) {
+            if(!confirm("Tem certeza que deseja remover este aluno da lista de presença?")) {
+                return;
+            }
+
+            fetch(`/excluir-aluno/${raAlun}/${idWork}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert("Aluno removido da lista de presença!");
+                    carregarListaPresenca();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao excluir aluno:", error);
+                alert("Erro ao excluir o aluno.");
+            });
+        }
+ 
+        async function buscarInfoCertificado(raAlun, idWork) {
+            try {
+                const alunoResponse = await fetch(`/buscar-aluno/${raAlun}`);
+
+                if(!alunoResponse.ok) {
+                    throw new Error('Erro ao buscar informações do aluno');
+                }
+
+                const alunoData = await alunoResponse.json();
+                const nomeAluno = alunoData.nomeAlun;
+
+                const workshopResponse = await fetch(`/buscar-workshop/${idWork}`);
+
+                if(!workshopResponse.ok) {
+                    throw new Error('Erro ao buscar informações do workshop');
+                }
+
+                const workshopData = await workshopResponse.json();
+                const nomeWorkshop = workshopData.nomeWork;
+                const dataEvento = workshopData.dataWork;
+
+                gerarCertificado(nomeAluno, nomeWorkshop, dataEvento);
+
+            } 
+            catch (error) {
+                console.error('Erro ao buscar informações para o certificado:', error);
+            }
+        }
+
+        function gerarCertificado(nomeAluno, nomeWorkshop, dataEvento) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF("landscape");
+
+            doc.setFillColor(230, 230, 250);
+            doc.rect(0, 0, 297, 210, "F");
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.setTextColor(0, 51, 102);
+            doc.text("Certificado de Participação", 148, 40, null, null, "center");
+
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Certificamos que`, 148, 70, null, null, "center");
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(20);
+            doc.text(nomeAluno, 148, 85, null, null, "center");
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(18);
+            doc.text(`Participou do workshop:`, 148, 100, null, null, "center");
+
+            doc.setFont("helvetica", "bold");
+            doc.text(`"${nomeWorkshop}"`, 148, 115, null, null, "center");
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(16);
+            doc.text(`Realizado em: ${dataEvento}`, 148, 130, null, null, "center");
+
+            doc.line(90, 170, 210, 170);
+            doc.setFontSize(14);
+            doc.text("Assinatura do Organizador", 148, 180, null, null, "center");
+
+
+            doc.save(`${nomeAluno}_Certificado.pdf`);
+        }
+
+    </script>
+    
+</body>
+</html>
